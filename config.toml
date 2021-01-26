@@ -1,5 +1,5 @@
 baseURL = "/"
-title = "敖小剑的学习笔记"
+title = "Ubuntu Server学习笔记"
 
 enableRobotsTXT = true
 uglyurls = true
@@ -48,14 +48,14 @@ anchor = "smart"
 [services]
 [services.googleAnalytics]
 # Comment out the next line to disable GA tracking. Also disables the feature described in [params.ui.feedback].
-id = "G-BCH7JZFQS9"
+id = "UA-00000000-0"
 
 # Language configuration
 
 [languages]
 [languages.zh]
-title = "敖小剑的学习笔记"
-description = "敖小剑的学习笔记，记录学习的过程和相关资料"
+title = "Ubuntu Server学习笔记"
+description = "Ubuntu Server学习笔记"
 languageName ="中文"
 contentDir = "content"
 time_format_default = "2006-01-02"
@@ -104,9 +104,9 @@ version = "0.0"
 url_latest_version = "https://example.com"
 
 # Repository configuration (URLs for in-page links to opening issues and suggesting changes)
-github_repo = "https://github.com/skyao/docsy-example"
+github_repo = "https://github.com/skyao/learning-ubuntu-server"
 # An optional link to a related project repo. For example, the sibling repository where your product code lives.
-github_project_repo = "https://github.com/skyao/docsy"
+github_project_repo = "https://github.com/skyao/learning-ubuntu-server"
 
 # Specify a value here if your content directory is not in your repo's root directory
 # github_subdir = ""
