@@ -10,11 +10,14 @@ description: >
 
 直接 apt-get 安装最新版本的oracle jdk8：
 
+
 ```bash
 sudo add-apt-repository ppa:webupd8team/java
 sudo apt-get update
 sudo apt-get install oracle-java8-installer
 ```
+
+> 备注：ubuntu 20.04 下已经不支持，报错" 此 PPA 不支持 focal"。只能改用手工安装方式。
 
 中间选择接收 oracle 的协议，然后继续安装。(吐糟一下: oracle 服务器的下载速度真慢，即使是我放在国外的VPS，号称千兆网络，也只有300-500k的速度......)
 
@@ -44,7 +47,7 @@ root@sky2:~# ls -l /etc/alternatives/java
 lrwxrwxrwx 1 root root 39 Oct  5 08:40 /etc/alternatives/java -> /usr/lib/jvm/java-8-oracle/jre/bin/java
 ```
 
-并且没有设置 JAVA_HOME。推荐设置好 JAVA_HOME 并将 JAVA_HOME/bin 目录加入PATH，修改/etc/profile文：
+并且没有设置 JAVA_HOME。推荐设置好 JAVA_HOME 并将 JAVA_HOME/bin 目录加入PATH，修改 .bashrc 文件：
 
 ```bash
 # java
@@ -52,21 +55,29 @@ export JAVA_HOME=/usr/lib/jvm/java-8-oracle/
 export PATH=$JAVA_HOME/bin:$PATH
 ```
 
-再执行 `source /etc/profile` 载入即可。
+再执行 `source ~/.bashrc` 载入即可。
 
 ## 手工安装JDK
 
-如果手工安装，可以从oracle网站下载安装文件，如jdk-8u161-linux-x64.gz（对于ubuntu不要下载rpm版本）。
+如果手工安装，可以从oracle网站下载安装文件，如 jdk-8u281-linux-x64.tar.gz（对于ubuntu不要下载rpm版本）。
 
 手工解压缩到安装路径:
 
 ```bash
-gunzip jdk-8u161-linux-x64.gz
-sudo mkdir /usr/lib/jvm
-sudo mv jdk-8u161-linux-x64 /usr/lib/jvm/jdk8
+gunzip jdk-8u281-linux-x64.tar.gz
+tar xvf jdk-8u281-linux-x64.tar
+# ubuntu20.04下这个这个目录已经存在
+# sudo mkdir /usr/lib/jvm
+sudo mv jdk1.8.0_281 /usr/lib/jvm/jdk8
 ```
 
-JAVA_HOME 和 PATH 设置同上。
+JAVA_HOME 和 PATH 设置类似:
+
+```bash
+# java
+export JAVA_HOME=/usr/lib/jvm/jdk8/
+export PATH=$JAVA_HOME/bin:$PATH
+```
 
 ## 参考资料
 
