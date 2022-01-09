@@ -1,11 +1,10 @@
 ---
-title: "配置"
-linkTitle: "配置"
-weight: 210
+title: "基本配置"
+linkTitle: "基本配置"
+weight: 2200
 description: >
-  Ubuntu Server安装后的配置工作
+  Ubuntu Server安装后的基本配置工作
 ---
-
 
 
 

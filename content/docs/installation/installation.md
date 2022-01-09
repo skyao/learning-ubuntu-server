@@ -1,8 +1,8 @@
 ---
 title: "安装Ubuntu Server"
 linkTitle: "安装Ubuntu Server"
-weight: 201
-date: 2021-01-24
+weight: 2001
+date: 2022-01-06
 description: >
   Ubuntu Server的安装
 ---
@@ -13,7 +13,7 @@ ubuntu server的安装非常简单，如果是用vmware安装，则更加的简�
 
 ### 物理机安装
 
-TODO
+和windows一起安装时，不需要划分额外的 ESP 分区，ubuntu server在安装时会选择windows 所在的 ESP 分区（而且无法改动）。
 
 ### ESXi安装
 
