@@ -481,13 +481,13 @@ ping 192.168.0.60		# OK
 
 ![network-plan](images/network-plan.svg)
 
-当然，最简单的方法还有一个，就是直接购入一台40g交换机，如 sx6012，但考虑到 sx6012 的价格（全新6000+，二手3000+），功耗和噪音也不适合高用，暂时先不买。等有刚需再说，比如软路由转发的性能不足，延迟过高。
+当然，最简单的方法还有一个，就是直接购入一台40g交换机，如 sx6012，但考虑到 sx6012 的价格（全新6000+，二手3000+），功耗和噪音也不适合家用，暂时先不买。等有刚需再说，比如软路由转发的性能不足，延迟过高。
 
-## 步骤4：其他
+## 步骤4-1：中央节点不用网桥地址
 
 ### 增加虚拟网卡（未完成，待续）
 
-中央节点现在在 10.0.0.1、24 号段没有自己的IP地址，虽然 10.0.0.1 的网关（网桥）地址可以使用，但是一来不好看，二来在 iperf3 测试中发现网桥地址在持续大压力下会报错。
+`中央节点现在在 10.0.0.1/24` 网段没有自己的IP地址，虽然 10.0.0.1 的网关（网桥）地址可以使用，但是一来不好看，二来在 iperf3 测试中发现网桥地址在持续大压力下会报错（补充：后续又发现不再报错了...）。
 
 可以用下面的命令创建虚拟网卡，但是，重启之后会消失，所以这不是一个好办法：
 
@@ -496,7 +496,7 @@ ping 192.168.0.60		# OK
 sudo ip link add veth40 type veth peer name lan5
 ```
 
-`sudo vi /etc/systemd/network/25-veth-lan5.netdev` 创建新的配置文件，内容如下：
+`sudo vi /etc/systemd/network/25-veth40-lan5.netdev` 创建新的配置文件，内容如下：
 
 ```bash
 [NetDev]
@@ -517,16 +517,15 @@ sudo service systemd-networkd restart
 ```bash
 $ ip addr
 ......
-9: lan5@veth40: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+8: lan5@veth40: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
     link/ether 66:41:e7:b6:02:72 brd ff:ff:ff:ff:ff:ff
-10: veth40@lan5: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
+9: veth40@lan5: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN group default qlen 1000
     link/ether fe:e6:7e:8d:ba:40 brd ff:ff:ff:ff:ff:ff
-
 ```
 
-重启一下操作系统，看看这两个 veth 设备是否还在。
+重启一下操作系统，看看这两个 veth 设备是否还在。很遗憾，重启之后消失了。。。(TBS: 后续再解决)
 
-然后在 netplan 中增加 veth 配置：
+然后在 netplan 中增加 veth 配置，其中 lan5 是要接到网桥上的，相当于在网桥这个虚拟路由器上多增加一个网卡接口：
 
 ```yaml
 network:
@@ -540,7 +539,7 @@ network:
       set-name: veth40 
       dhcp4: false
       addresses: 
-        - 10.0.0.40
+        - 10.0.0.40/32
       gateway4: 10.0.0.1
       nameservers:
         addresses:
@@ -558,69 +557,119 @@ network:
         - lan5
 ```
 
-修改 dns 配置:
+保存后执行 `sudo netplan apply` 生效。
+
+````bash
+sudo ip link set lan5 up
+sudo ip link set veth40 up
+
+sudo ip link set dev lan5 master br
+````
+
+修改 dns 配置， `sudo vi /etc/dnsmasq.conf`，增加下面内容：
 
 ```
+interface=lan5                      # DNS & DHCP 服务网卡
 
+dhcp-host=fe:e6:7e:8d:ba:40,10.0.0.40  				# skyserver
 ```
+
+重启 dnsmasq: `sudo systemctl restart dnsmasq.service`
+
+```bash
+# 为veth40指定ip地址
+$ sudo ip addr add 10.0.0.40/24 dev veth40
+
+# 此时路由表有问题，有两条 10.0.0.0/24
+$ ip route
+default via 192.168.0.1 dev wan1 proto dhcp metric 100 
+10.0.0.0/24 dev veth40 proto kernel scope link src 10.0.0.40 
+10.0.0.0/24 dev br proto kernel scope link src 10.0.0.1 metric 425 
+169.254.0.0/16 dev lan1 scope link metric 1000 
+192.168.0.0/24 dev wan1 proto kernel scope link src 192.168.0.40 metric 100 
+
+# 增加直接访问10.0.0.40的路由，无需走br，直接去veth40好了，主要是从wan转过来的流浪
+$ ip route replace 10.0.0.40/32 dev veth40
+# 除了 10.0.0.40 之外，其他访问 10.0.0.0/24 网段的流量都走br网桥
+$ sudo ip route replace 10.0.0.0/24 dev br
+# 此时的路由表如下，还是有两条10.0.0.0/24 via br的条路
+$ ip route
+default via 192.168.0.1 dev wan1 proto dhcp metric 100 
+10.0.0.0/24 dev br scope link 
+10.0.0.0/24 dev br proto kernel scope link src 10.0.0.1 metric 425 
+10.0.0.40 dev veth40 scope link 
+169.254.0.0/16 dev lan1 scope link metric 1000 
+192.168.0.0/24 dev wan1 proto kernel scope link src 192.168.0.40 metric 100
+
+# 删掉这个路由条目
+sudo ip route delete 10.0.0.0/24
+# 中央节点机器最终的路由表：
+$ ip route
+default via 192.168.0.1 dev wan1 proto dhcp metric 100 
+10.0.0.0/24 dev br proto kernel scope link src 10.0.0.1 metric 425 
+10.0.0.40 dev veth40 scope link 
+169.254.0.0/16 dev lan1 scope link metric 1000 
+192.168.0.0/24 dev wan1 proto kernel scope link src 192.168.0.40 metric 100 
+
+# 待确定：是否要继续修改
+sudo ip route replace 10.0.0.0/24 dev br src 10.0.0.40
+# 执行后路由表如下
+$ ip route
+default via 192.168.0.1 dev wan1 proto dhcp metric 100 
+10.0.0.0/24 dev br scope link src 10.0.0.40 
+10.0.0.0/24 dev br proto kernel scope link src 10.0.0.1 metric 425 
+10.0.0.40 dev veth40 scope link 
+169.254.0.0/16 dev lan1 scope link metric 1000 
+192.168.0.0/24 dev wan1 proto kernel scope link src 192.168.0.40 metric 100 
+```
+
+验证后可以得知，增加虚拟网卡的方案是可行的，但是，配置太复杂了，而且路由方案也复杂，容易出错。
 
 参考资料:
 
 - https://segmentfault.com/a/1190000009251098?utm_source=sf-similar-article
 - https://segmentfault.com/a/1190000009491002
 
-## 总结（未完成，待续）
+- [ip COMMAND  CHEAT SHEET](https://access.redhat.com/sites/default/files/attachments/rh_ip_command_cheatsheet_1214_jcs_print.pdf)
 
-最终版本的 `/etc/netplan/00-installer-config.yaml` 文件内容：
+## 步骤4-2： 中央节点直接用网桥地址
+
+这个方案就简单了，中央节点直接用网桥地址即可。
+
+只是网桥地址是 10.0.0.1 ，这个地址作为一个独立的"软路由"是合理的，但是对于只是兼职做软路由的重要节点机器而言直接用"网关地址"总是感觉别扭。
+
+因此，简单的将前面网桥配置中的网桥地址从 10.0.0.1 修改为 10.0.0.40 即可。
+
+ `sudo vi /etc/netplan/00-installer-config.yaml` ，修改内容如下：
 
 ```yaml
-network:
-  version: 2
-  renderer: NetworkManager
-  ethernets:
-    wan1:
-      match:         # 根据mac地址匹配，将配置参数应用到匹配的网卡上
-        macaddress: 04:d4:c4:5a:e2:77
-      set-name: wan1 # 提高可读性，将网卡重命名为 wan1
-      dhcp4: true
-    wan2: # 不使用的千兆口
-      match:         # 根据mac地址匹配，将配置参数应用到匹配的网卡上
-        macaddress: 04:d4:c4:5a:e2:78
-      set-name: wan2 # 提高可读性，将网卡重命名为 wan1
-      dhcp4: true
-    lan1:
-      match:
-        macaddress: 24:be:05:bd:08:01
-      set-name: lan1
-      dhcp4: no
-    lan2:
-      match:
-        macaddress: 24:be:05:bd:08:02
-      set-name: lan2
-      dhcp4: no
-    lan3:
-      match:
-        macaddress: 24:be:05:bd:88:e1
-      set-name: lan3
-      dhcp4: no
-    lan4:
-      match:
-        macaddress: 24:be:05:bd:88:e2
-      set-name: lan4
-      dhcp4: no
-  bridges:
     br:
-      interfaces: # 网桥上要包含的端口
-        - lan1
-        - lan2
-        - lan3
-        - lan4
       addresses:  # 网桥的地址
-        - 10.0.0.1/24
-      dhcp4: no
+        - 10.0.0.40/24
 ```
 
+保存后执行 `sudo netplan apply`。
 
+修改 `sudo vi /etc/dnsmasq.conf`：
 
+```properties
+listen-address=127.0.0.1,10.0.0.40 # 监听 127.0.0.1 和 网桥的地址
 
+dhcp-option=option:router,10.0.0.40                  # 网关地址（网桥）
+dhcp-option=option:dns-server,10.0.0.40              # DNS 地址
+```
+
+之后重启 dnsmasq: `sudo systemctl restart dnsmasq.service`。最好重启中央节点机器。
+
+这个方案下路由信息非常简单：
+
+```bash
+$ ip route
+default via 192.168.0.1 dev wan1 proto dhcp metric 100 
+10.0.0.0/24 dev br proto kernel scope link src 10.0.0.40 metric 425 
+169.254.0.0/16 dev lan1 scope link metric 1000 
+192.168.0.0/24 dev wan1 proto kernel scope link src 192.168.0.40 metric 100 
+```
+
+iperf3测试跑出了35G到37G的成绩，而且很稳定。因此可以先用这个方案，暂时抛弃加一对虚拟网卡的方案。
 
