@@ -1,7 +1,7 @@
 ---
 title: "SSH登录"
 linkTitle: "SSH登录"
-weight: 213
+weight: 20
 date: 2021-01-24
 description: >
   使用新用户SSH登录服务器
@@ -50,11 +50,16 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 如果服务器ip地址固定，则可以进一步简化，修改本机的`/etc/hosts`文件，加入下面内容：
 
 ```bash
-# ubuntu.server.ip server
-192.168.156.128 server
+# local machine list
+10.0.0.10            skywork
+10.0.0.20            skywork2
+10.0.0.30            skydownload
+10.0.0.40            skyserver
+10.0.0.50            skyserver2
+10.0.0.60            skyserver3
 ```
 
-以后简单输入 "ssh server" 即可。
+以后简单输入 "ssh skyserver" 即可。
 
 ### 指定特定端口登录
 
@@ -66,12 +71,15 @@ ssh默认采用22端口，对于需要进行端口映射导致不能访问22端�
 ssh -p 2122 sky@home.springmesh.io
 ```
 
-修改本机的 `~/.bash_profile` 文件，加入一下内容，以后就可以一个简单命令直接ssh到远程服务器了：
+修改本机的 `~/.bash_profile` 或者 `~/.zshrc` 文件，加入以下内容，以后就可以一个简单命令直接ssh到远程服务器了：
 
 ```bash
 # ssh to home
-alias ssh10="ssh sky@home.springmesh.io"
-alias ssh21="ssh -p 2122 sky@home.springmesh.io"
+alias sshwork="ssh sky@skywork"
+alias sshwork2="ssh sky@skywor2"
+alias sshserver="ssh sky@skyserver"
+alias sshserver2="ssh sky@skyserver2"
+alias sshserver3="ssh sky@skyserver3"
 ```
 
 ### 特别补充

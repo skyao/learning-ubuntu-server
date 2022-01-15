@@ -1,7 +1,7 @@
 ---
 title: "timeshift的安装配置"
 linkTitle: "安装"
-weight: 2110
+weight: 100
 date: 2022-01-06
 description: >
   安装并配置timeshift
@@ -27,12 +27,7 @@ Syntax:
   timeshift --restore [OPTIONS]
   timeshift --delete-[all] [OPTIONS]
   timeshift --list-{snapshots|devices} [OPTIONS]
-
 ```
-
-
-
-
 
 ## 配置
 
@@ -171,3 +166,4 @@ First snapshot requires: 0 B
 
 No snapshots found
 ```
+

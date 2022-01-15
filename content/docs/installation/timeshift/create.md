@@ -19,7 +19,7 @@ timeshift --create --comments "first backup after install" --tags D
 
 tags的类型:
 
-- O: Other，默认值，一般用于手工创建快照
+- O: Ondemand，默认值，一般用于手工创建快照
 - B: Boot
 - H: Hourly
 - D: Daily
@@ -28,7 +28,7 @@ tags的类型:
 
 ### 示例
 
-这是创建的第一个快照，操作系统和timeshift安装完成之后的第一个快照：
+这是创建的第一个快照，操作系统和 timeshift 安装完成之后的第一个快照：
 
 ```bash
 $ sudo timeshift --create --comments "first backup after install" 

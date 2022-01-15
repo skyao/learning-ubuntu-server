@@ -1,11 +1,13 @@
 ---
-title: "添加新用户"
-linkTitle: "添加新用户"
-weight: 212
+title: "[归档]添加新用户"
+linkTitle: "[归档]添加新用户"
+weight: 299
 date: 2021-01-24
 description: >
   添加新用户以便日常使用
 ---
+
+ubuntu server 20.04 版本在安装时就需要设置用户名，而不是默认只有root账号。
 
 ### 添加新用户
 
