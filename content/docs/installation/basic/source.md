@@ -60,3 +60,26 @@ apt update
 apt upgrade
 ```
 
+## 取消PPA仓库
+
+当添加太多的 PPA 仓库之后，apt update 的速度就会慢很多。
+
+考虑到大多数软件不会经常更新，而且我们也没有立即更新的迫切需求，因此建议取消这些 PPA 仓库。
+
+### 终端操作
+
+PPA仓库存储位置：
+
+```bash
+$ cd /etc/apt/sources.list.d
+$ ls -l
+git-core-ubuntu-ppa-focal.list
+```
+
+打开具体要取消的PPA仓库，如上面的git的ppa仓库文件，注释掉相关的内容。
+
+不要直接删，以后如果需要更新，可以手工取消注释而不用重新找ppa仓库地址再添加。
+
+### UI操作
+
+"开始菜单" -> "系统管理" -> "软件源" -> "PPA", 将不需要及时更新的软件的 PPA 取消。

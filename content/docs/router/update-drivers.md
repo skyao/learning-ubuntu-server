@@ -293,6 +293,8 @@ vermagic:       5.4.0-94-generic SMP mod_unload modversions
 
 可以看到现在的驱动版本已经从默认安装的 4.0-0 变成了 4.9-4.1.7 。
 
+> 后续补充：上面的方式在 x99主板+e5 2666 v3的机器上顺利编译安装，但在 x299 + 7960x 机器上报错。用timeshift恢复后重新来过，增加了参数执行 `./mlnxofedinstall --without-fw-update` 又成功的编译安装完成。
+
 ### ~~linux mint~~
 
 在基于 ubuntu 20.04 内核的 linux mint 20.02 版本上更新驱动。但奈何没能搞定，各种错误，最后放弃，重新安装回原版的ubuntu 20.04.
