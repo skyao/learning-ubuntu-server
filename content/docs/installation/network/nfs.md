@@ -86,7 +86,7 @@ sudo ufw allow from 10.0.0.0/24 to any port nfs
 
 ### 增加nfs共享的硬盘
 
-服务器机器上有两块3t的旧硬盘，准备通过nfs共享出来，方便其他机器访问。
+服务器机器上有一块4t的ssd和两块3t的旧硬盘，准备通过nfs共享出来，方便其他机器访问。
 
 可以通过fdisk命令获取相关的硬盘和分区信息：
 
@@ -100,6 +100,10 @@ Device     Start        End    Sectors  Size Type
 Disk /dev/sdb: 2.75 TiB, 3000592982016 bytes, 5860533168 sectors
 Device     Start        End    Sectors  Size Type
 /dev/sdb1   2048 5860532223 5860530176  2.7T Linux filesystem
+
+Disk /dev/nvme1n1: 3.5 TiB, 3840755982336 bytes, 7501476528 sectors
+Device     Start        End    Sectors  Size Type
+/dev/nvme1n1p1  2048 7501475839 7501473792  3.5T Linux filesystem
 ```
 
 然后查分区对应的uuid备用:
@@ -109,6 +113,7 @@ $ ls -l /dev/disk/by-uuid/
 ......
 lrwxrwxrwx 1 root root 10 Jan 16 12:34 7c3a3aca-9cde-48a0-957b-eead5b2ab7dc -> ../../sda1
 lrwxrwxrwx 1 root root 10 Jan 16 12:34 fcae6bde-4789-4afe-b164-c7189a0bdf5f -> ../../sdb1
+lrwxrwxrwx 1 root root 15 Jan 17 01:35 561fe530-4888-4759-97db-f36f607ca18e -> ../../nvme1n1p1
 
 $ sudo mkdir /mnt/e
 $ sudo mkdir /mnt/f
@@ -120,6 +125,8 @@ $ sudo mkdir /mnt/f
 # two old disks
 /dev/disk/by-uuid/7c3a3aca-9cde-48a0-957b-eead5b2ab7dc /mnt/e ext4 defaults 0 1
 /dev/disk/by-uuid/fcae6bde-4789-4afe-b164-c7189a0bdf5f /mnt/f ext4 defaults 0 1
+# one ssd disk
+/dev/disk/by-uuid/561fe530-4888-4759-97db-f36f607ca18e /mnt/d ext4 defaults 0 1
 ```
 
 执行 `sudo mount -av` 立即生效。
@@ -127,6 +134,8 @@ $ sudo mkdir /mnt/f
 加到nfs共享中：
 
 ```bash
+sudo chown nobody:nogroup /mnt/d
+sudo chmod -R 777 /mnt/d
 sudo chown nobody:nogroup /mnt/e
 sudo chmod -R 777 /mnt/e
 sudo chown nobody:nogroup /mnt/f
@@ -136,6 +145,8 @@ sudo chmod -R 777 /mnt/f
 `sudo vi /etc/exports` 增加授权访问:
 
 ```bash
+/mnt/d 192.168.0.0/24(rw,sync,no_subtree_check)
+/mnt/d 10.0.0.0/24(rw,sync,no_subtree_check)
 /mnt/e 192.168.0.0/24(rw,sync,no_subtree_check)
 /mnt/e 10.0.0.0/24(rw,sync,no_subtree_check)
 /mnt/f 192.168.0.0/24(rw,sync,no_subtree_check)
@@ -159,6 +170,7 @@ sudo apt install nfs-common
 
 ```bash
 sudo mkdir -p /mnt/nfs-skyserver
+sudo mkdir -p /mnt/d
 sudo mkdir -p /mnt/e
 sudo mkdir -p /mnt/f
 ```
@@ -167,6 +179,7 @@ sudo mkdir -p /mnt/f
 
 ```bash
 sudo mount 10.0.0.40:/mnt/nfs-share /mnt/nfs-skyserver
+sudo mount 10.0.0.40:/mnt/d /mnt/d
 sudo mount 10.0.0.40:/mnt/e /mnt/e
 sudo mount 10.0.0.40:/mnt/f /mnt/f
 ```
@@ -186,6 +199,7 @@ touch a.txt
 mkdir -p ~/data
 cd ~/data
 ln -s /mnt/nfs-skyserver skyserver
+ln -s /mnt/d d
 ln -s /mnt/e e
 ln -s /mnt/f f
 ```
