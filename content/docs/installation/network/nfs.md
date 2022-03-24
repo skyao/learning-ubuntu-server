@@ -213,6 +213,7 @@ ln -s /mnt/f f
 ```properties
 # nfs from skyserver
 10.0.0.40:/mnt/nfs-share /mnt/nfs-skyserver   nfs   defaults,timeo=15,retrans=5,_netdev	0 0
+10.0.0.40:/mnt/d /mnt/d   nfs   defaults,timeo=15,retrans=5,_netdev	0 0
 10.0.0.40:/mnt/e /mnt/e   nfs   defaults,timeo=15,retrans=5,_netdev	0 0
 10.0.0.40:/mnt/f /mnt/f   nfs   defaults,timeo=15,retrans=5,_netdev	0 0
 ```
