@@ -673,3 +673,30 @@ default via 192.168.0.1 dev wan1 proto dhcp metric 100
 
 iperf3测试跑出了35G到37G的成绩，而且很稳定。因此可以先用这个方案，暂时抛弃加一对虚拟网卡的方案。
 
+## 步骤4-3： 改用192.168.100.1/24号段
+
+由于 10 号段经常被其他程序使用，因此最后决定把40g高速网络的号段改为 192.168.100.1/24 号段
+
+因此，简单的将前面网桥配置中的网桥地址从 10.0.0.40 修改为 192.168.100.40 即可。
+
+ `sudo vi /etc/netplan/00-installer-config.yaml` ，修改内容如下：
+
+```yaml
+    br:
+      addresses:  # 网桥的地址
+        - 192.168.100.40/24
+```
+
+保存后执行 `sudo netplan apply`。
+
+修改 `sudo vi /etc/dnsmasq.conf`：
+
+```properties
+listen-address=127.0.0.1,192.168.100.40 # 监听 127.0.0.1 和 网桥的地址
+
+dhcp-option=option:router,192.168.100.40                  # 网关地址（网桥）
+dhcp-option=option:dns-server,192.168.100.40              # DNS 地址
+```
+
+之后重启 dnsmasq: `sudo systemctl restart dnsmasq.service`。最好重启中央节点机器。
+
