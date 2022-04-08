@@ -51,12 +51,12 @@ cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 
 ```bash
 # local machine list
-10.0.0.10            skywork
-10.0.0.20            skywork2
-10.0.0.30            skydownload
-10.0.0.40            skyserver
-10.0.0.50            skyserver2
-10.0.0.60            skyserver3
+192.168.100.10            skywork
+192.168.100.20            skywork2
+192.168.100.30            skydownload
+192.168.100.40            skyserver
+192.168.100.50            skyserver2
+192.168.100.60            skyserver3
 ```
 
 以后简单输入 "ssh skyserver" 即可。
