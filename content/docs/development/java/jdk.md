@@ -1,10 +1,14 @@
 ---
 title: "安装JDK"
 linkTitle: "安装JDK"
-weight: 621
+weight: 10
 description: >
   安装JDK
 ---
+
+## TBD
+
+考虑使用 sdkman 管理JDK，在 macos 下非常好用，ubuntu下还没有尝试。
 
 ## apt-get 自动安装
 
@@ -82,3 +86,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 ## 参考资料
 
 - [https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04](https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04)
+
+
+
