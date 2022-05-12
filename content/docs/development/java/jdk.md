@@ -6,9 +6,32 @@ description: >
   安装JDK
 ---
 
-## TBD
+## 使用sdkman安装
 
-考虑使用 sdkman 管理JDK，在 macos 下非常好用，ubuntu下还没有尝试。
+使用 sdkman 管理JDK:
+
+```bash
+$ sdk list java
+$ sdk install java 11.0.15-zulu
+
+Downloading: java 11.0.15-zulu
+
+In progress...
+
+###################################################################################### 100.0%
+
+Repackaging Java 11.0.15-zulu...
+
+Done repackaging...
+
+Installing: java 11.0.15-zulu
+Done installing!
+
+
+Setting java 11.0.15-zulu as default.
+```
+
+
 
 ## apt-get 自动安装
 

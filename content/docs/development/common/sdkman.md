@@ -16,15 +16,29 @@ SDKMAN 是一款管理多版本 SDK 的工具，可以实现在多个版本间�
 
 ### 安装sdkman
 
+### macOS
+
 ```bash
 $ curl -s "https://get.sdkman.io" | bash
-$ curl -s "https://get.sdkman.io" | bash
-$ sdk version
 
+$ source "/home/sky/.sdkman/bin/sdkman-init.sh"
+$ sdk version
 SDKMAN 5.15.0
 ```
 
 
+
+### ubuntu
+
+```bash
+$ sudo apt install unzip zip
+$ curl -s "https://get.sdkman.io" | bash
+
+$ source "/home/sky/.sdkman/bin/sdkman-init.sh"
+$ sdk version
+
+SDKMAN 5.15.0
+```
 
 
 

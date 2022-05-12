@@ -8,7 +8,25 @@ description: >
 
 
 
-### 配置代理服务器
+## 安装maven
+
+### 用sdkman安装
+
+```bash
+$ sdk install maven
+
+Downloading: maven 3.8.5
+
+In progress...
+
+Setting maven 3.8.5 as default.
+```
+
+
+
+
+
+## 配置代理服务器
 
 export MAVEN_OPTS="-DsocksProxyHost=192.168.0.30 -DsocksProxyPort=10808"
 
