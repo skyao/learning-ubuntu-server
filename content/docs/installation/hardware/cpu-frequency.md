@@ -61,6 +61,16 @@ $ cpufreq-info | grep "current CPU frequency"
 ......
 ```
 
+也可以这样每秒钟刷新一下：
+
+```bash
+watch -n1 "lscpu | grep MHz | awk '{print $1}'";
+```
+
+
+
+
+
 ## auto-cpufreq
 
 https://snapcraft.io/auto-cpufreq
