@@ -187,3 +187,44 @@ IDX LINK   TYPE       OPERATIONAL SETUP
   6 ibs4d1 infiniband off         unmanaged 			# 这个口本来被禁用了
 ```
 
+### 增加要管理的网卡
+
+有某台机器，出现了网卡状态为 down 的情况，造成无法使用，原因不明。
+
+```bash
+$ ip addr                                     
+......
+5: ens4: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 70:10:6f:aa:2a:81 brd ff:ff:ff:ff:ff:ff
+    
+$ networkctl
+IDX LINK   TYPE       OPERATIONAL SETUP     
+  1 lo     loopback   carrier     unmanaged 
+  2 enp4s0 ether      routable    configured
+  3 enp5s0 ether      off         unmanaged 
+  4 enp6s0 ether      off         unmanaged 
+  5 ens4   ether      off         unmanaged 
+  6 ibs4d1 infiniband off         unmanaged 
+```
+
+解决方法：
+
+```bash
+cd /usr/lib/systemd/network
+vi 03-ens4-dhcp.network
+```
+
+输入以下内容：
+
+```properties
+[Match]
+MACAddress=70:10:6f:aa:2a:81
+
+[Link]
+Unmanaged=no
+
+[Network]
+DHCP=yes
+```
+
+重启即可。
