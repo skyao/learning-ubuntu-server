@@ -31,23 +31,7 @@ Syntax:
 
 ## 配置
 
-默认安装后第一次运行时，由于没有配置文件，timeshift会默认找到一个 ext4 分区作为备份区：
-
-```bash
-$ sudo timeshift --list
-First run mode (config file not found)
-Selected default snapshot type: RSYNC
-Mounted '/dev/sda1' at '/run/timeshift/backup'
-Selected default snapshot device: /dev/sda1
-Device : /dev/sda1
-UUID   : aa0d664b-bb69-564f-a5a7-d32d645b68b3
-Path   : /run/timeshift/backup
-Mode   : RSYNC
-Status : No snapshots on this device
-First snapshot requires: 0 B
-
-No snapshots found
-```
+默认安装后，在第一次运行前，我们需要修改 timeshift 的配置文件，否则 timeshift 会默认找到一个 ext4 分区作为备份区。
 
 看一下目前的硬盘情况：
 
@@ -59,64 +43,56 @@ Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-Disk /dev/loop1: 32.3 MiB, 33865728 bytes, 66144 sectors
+Disk /dev/loop1: 70.32 MiB, 73728000 bytes, 144000 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-Disk /dev/loop2: 70.32 MiB, 73728000 bytes, 144000 sectors
+Disk /dev/loop2: 32.3 MiB, 33865728 bytes, 66144 sectors
 Units: sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
 
 
-Disk /dev/nvme0n1: 894.26 GiB, 960197124096 bytes, 1875385008 sectors
-Disk model: SAMSUNG MZ1LW960HMJP-000MV              
-Units: sectors of 1 * 512 = 512 bytes
-Sector size (logical/physical): 512 bytes / 512 bytes
-I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk /dev/nvme0n1: 838.37 GiB, 900185481216 bytes, 219771846 sectors
+Disk model: MZ1LB960HBJR-000FB                      
+Units: sectors of 1 * 4096 = 4096 bytes
+Sector size (logical/physical): 4096 bytes / 4096 bytes
+I/O size (minimum/optimal): 131072 bytes / 131072 bytes
 Disklabel type: gpt
-Disk identifier: FECA5117-B485-4E26-AB5A-BFCEB95B946F
+Disk identifier: 7C431E31-78CA-4600-9C2F-C68D10E793CC
 
-Device              Start        End    Sectors  Size Type
-/dev/nvme0n1p1       2048     206847     204800  100M EFI System
-/dev/nvme0n1p2     206848     239615      32768   16M Microsoft reserved
-/dev/nvme0n1p3     239616  209952767  209713152  100G Microsoft basic data
-/dev/nvme0n1p4  209952768  210362367     409600  200M EFI System
-/dev/nvme0n1p5  210362368 1678370815 1468008448  700G Linux filesystem
-/dev/nvme0n1p6 1678370816 1875384319  197013504   94G Linux filesystem
-
-
-Disk /dev/sda: 2.75 TiB, 3000878383104 bytes, 5861090592 sectors
-Disk model: WDC WD3000FYYZ-0
-Units: sectors of 1 * 512 = 512 bytes
-Sector size (logical/physical): 512 bytes / 512 bytes
-I/O size (minimum/optimal): 512 bytes / 512 bytes
-Disklabel type: gpt
-Disk identifier: 0E6923C2-540C-44CB-8CFA-4DF69549741A
-
-Device          Start        End    Sectors   Size Type
-/dev/sda1        2048 4294971391 4294969344     2T Linux filesystem
-/dev/sda2  4294971392 5861089279 1566117888 746.8G Microsoft basic data
+Device             Start       End   Sectors  Size Type
+/dev/nvme0n1p1       256    131327    131072  512M EFI System
+/dev/nvme0n1p2    131328 196739327 196608000  750G Linux filesystem
+/dev/nvme0n1p3 196739328 219771391  23032064 87.9G Linux filesystem
 ```
 
-这里的 `/dev/nvme0n1p6` 是我为 timeshift 预留的分区，存放在 nvme 磁盘上，以保证备份和恢复的速度。
+这里的 `/dev/nvme0n1p3` 是我为 timeshift 预留的分区，存放在 nvme 磁盘上，以保证备份和恢复的速度。
 
-`/dev/sda1` 分区是普通机械硬盘，用来存放对速度不敏感的数据，如日志等。
+```bash
+$ sudo lsblk -f
+NAME        FSTYPE   LABEL UUID                                 FSAVAIL FSUSE% MOUNTPOINT
+loop0       squashfs                                                  0   100% /snap/core18/2128
+loop1       squashfs                                                  0   100% /snap/lxd/21029
+loop2       squashfs                                                  0   100% /snap/snapd/12704
+nvme0n1                                                                        
+├─nvme0n1p1 vfat           72C9-B4E4                             504.9M     1% /boot/efi
+├─nvme0n1p2 ext4           a83415e6-ed69-4932-9d08-1e87d7510dc1  689.1G     1% /
+└─nvme0n1p3 ext4           9b22569d-9410-48cc-b994-10257b2d0498   81.5G     0% /run/timeshift/backup
+```
 
-由于 timeshift 默认找到了 `/dev/sda1` 分区并设置为备份地，因此第一件时间就是要修改配置, `sudo vi /etc/timeshift.json` 打开:
+记录 nvme0n1p3 的 uuid ，然后修改配置, `sudo vi /etc/timeshift/timeshift.json`  打开后设置 backup_device_uuid 为 nvme0n1p3 的 uuid :
 
 ```json
 {
-  "backup_device_uuid" : "",
+  "backup_device_uuid" : "9b22569d-9410-48cc-b994-10257b2d0498",
   "parent_device_uuid" : "",
-  "do_first_run" : "false",
+  "do_first_run" : "true",
   "btrfs_mode" : "false",
-  "include_btrfs_home_for_backup" : "false",
-  "include_btrfs_home_for_restore" : "false",
+  "include_btrfs_home" : "false",
   "stop_cron_emails" : "true",
-  "btrfs_use_qgroup" : "true",
   "schedule_monthly" : "false",
   "schedule_weekly" : "false",
   "schedule_daily" : "false",
@@ -129,7 +105,6 @@ Device          Start        End    Sectors   Size Type
   "count_boot" : "5",
   "snapshot_size" : "0",
   "snapshot_count" : "0",
-  "date_format" : "%Y-%m-%d %H:%M:%S",
   "exclude" : [
   ],
   "exclude-apps" : [
@@ -137,28 +112,17 @@ Device          Start        End    Sectors   Size Type
 }
 ```
 
-其中 backup_device_uuid 需要设置为对应分区的UUID，可以通过下面的命令查找：
-
-```bash
-$ sudo blkid | grep nvme0n1p6
-/dev/nvme0n1p6: UUID="208eb500-fd49-4580-b4ea-3b126d5b0fe4" TYPE="ext4" PARTLABEL="Linux data partition" PARTUUID="0f43b2c9-95ce-468d-b0cc-3d95976e17bd"
-```
-
-修改 backup_device_uuid 为上面的 UUID 即可：
-
-```json
-{
-  "backup_device_uuid" : "208eb500-fd49-4580-b4ea-3b126d5b0fe4",
-}
-```
-
-重新执行timeshift命令，就能看到配置生效了：
+执行timeshift命令，就能看到配置生效了：
 
 ```bash
 sudo timeshift --list
-Mounted '/dev/nvme0n1p6' at '/run/timeshift/backup'
-Device : /dev/nvme0n1p6
-UUID   : 208eb500-fd49-4580-b4ea-3b126d5b0fe4
+First run mode (config file not found)
+Selected default snapshot type: RSYNC
+
+/dev/nvme0n1p3 is mounted at: /run/timeshift/backup, options: rw,relatime,stripe=32
+
+Device : /dev/nvme0n1p3
+UUID   : 9b22569d-9410-48cc-b994-10257b2d0498
 Path   : /run/timeshift/backup
 Mode   : RSYNC
 Status : No snapshots on this device

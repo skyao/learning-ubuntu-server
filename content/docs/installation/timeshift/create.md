@@ -14,7 +14,7 @@ description: >
 常见快照的命令为：
 
 ```bash
-timeshift --create --comments "first backup after install" --tags D
+timeshift --create --comments "first backup after install" --tags O
 ```
 
 tags的类型:

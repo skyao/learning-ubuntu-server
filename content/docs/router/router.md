@@ -103,7 +103,7 @@ $ ip addr
 
 - ether 24:be:05:bd:88:e2
 
-### 网卡改名和增加网桥
+网卡改名和增加网桥
 
 默认的名字不太好读，需要改名，另外我们要为这四块LAN卡创建一个网桥，这个网桥就相当于一个虚拟的交换机。
 
@@ -700,3 +700,131 @@ dhcp-option=option:dns-server,192.168.100.40              # DNS 地址
 
 之后重启 dnsmasq: `sudo systemctl restart dnsmasq.service`。最好重启中央节点机器。
 
+## 软路由快速重建版本
+
+以下为最新版本的软路由配置，备用：
+
+```bash
+$ ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+2: enp7s0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default qlen 1000
+    link/ether 04:d4:c4:5a:e2:78 brd ff:ff:ff:ff:ff:ff
+3: enp8s0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 04:d4:c4:5a:e2:77 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.10/24 brd 192.168.0.255 scope global enp8s0
+       valid_lft forever preferred_lft forever
+4: ens4: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 24:be:05:bd:08:01 brd ff:ff:ff:ff:ff:ff
+5: ens4d1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 24:be:05:bd:08:02 brd ff:ff:ff:ff:ff:ff
+6: ens1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 24:be:05:bd:88:e1 brd ff:ff:ff:ff:ff:ff
+7: ens1d1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    link/ether 24:be:05:bd:88:e2 brd ff:ff:ff:ff:ff:ff
+```
+
+`sudo cp /etc/netplan/00-installer-config.yaml /etc/netplan/00-installer-config.yaml.original` 备份原文件。
+
+`sudo vi /etc/netplan/00-installer-config.yaml` ，修改内容如下：
+
+```yaml
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    wan1:
+      match: 
+        macaddress: 04:d4:c4:5a:e2:77
+      set-name: wan1 
+      dhcp4: true
+    wan2: # unmanaged
+      match:         
+        macaddress: 04:d4:c4:5a:e2:78
+      set-name: wan2 
+      dhcp4: true
+    lan1:
+      match:
+        macaddress: 24:be:05:bd:08:01
+      set-name: lan1
+      dhcp4: no
+    lan2:
+      match:
+        macaddress: 24:be:05:bd:08:02
+      set-name: lan2
+      dhcp4: no
+    lan3:
+      match:
+        macaddress: 24:be:05:bd:88:e1
+      set-name: lan3
+      dhcp4: no
+    lan4:
+      match:
+        macaddress: 24:be:05:bd:88:e2
+      set-name: lan4
+      dhcp4: no
+  bridges:
+    br:
+      interfaces: 
+        - lan1
+        - lan2
+        - lan3
+        - lan4
+      addresses:  
+        - 192.168.100.10/24
+      dhcp4: no
+```
+
+`sudo apt install network-manager` 先把network-manager 安装起来。
+
+`sudo netplan apply`，重启机器，执行 ip addr 检查。
+
+```bash
+sudo apt-get install dnsmasq
+
+sudo systemctl stop systemd-resolved
+sudo systemctl disable systemd-resolved
+
+sudo rm /etc/resolv.conf 
+echo nameserver 192.168.0.1 | sudo tee /etc/resolv.conf
+```
+
+`sudo vi /etc/resolvconf/resolv.conf.d/head` 增加文件内容为:
+
+```bash
+nameserver 192.168.0.1
+```
+
+重启。
+
+`sudo vi /etc/dnsmasq.conf`：
+
+```bash
+listen-address=127.0.0.1,192.168.100.10
+port=53
+interface=lan1
+interface=lan2
+interface=lan3
+interface=lan4
+
+dhcp-range=192.168.100.10,192.168.100.99,255.255.255.0,12h 
+dhcp-option=option:router,192.168.100.10
+dhcp-option=option:dns-server,192.168.100.10
+dhcp-option=option:netmask,255.255.255.0
+
+dhcp-host=48:0f:cf:ef:08:11,192.168.100.20  			# skyserver2
+dhcp-host=70:10:6f:aa:b3:01,192.168.100.30				# skyserver3
+dhcp-host=48:0f:cf:f7:89:c2,192.168.100.40				# skyserver4
+```
+
+重启。
+
+备注1： IP 地址分配：
+
+- skyserver: 192.168.100.10， 192.168.0.10
+- skyserver2: 192.168.100.20，192.168.0.20
+- skyserver3: 192.168.100.30，192.168.0.30
+- skyserver4: 192.168.100.40，192.168.0.40
+
+备注2： 多次遇到 hp544 网卡不被ubuntu server 管理状态为 down 的情况，需要手工添加，详见 基本配置-》配置网络-》增加要管理的网卡一节。
+
+DNS和转发的配置见前文，这里不重复。

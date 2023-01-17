@@ -13,20 +13,28 @@ description: >
 
 HP 544网卡linux驱动下载地址：
 
-https://www.mellanox.com/products/ethernet-drivers/linux/mlnx_en
+~~https://www.mellanox.com/products/ethernet-drivers/linux/mlnx_en~~
 
-https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed
+~~https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed~~
+
+> 备注：以上页面也不能打开
 
 选择 "LTS Download", 目前只有 4.9-4.1.70 版本可以下载，选择 ubuntu 20.04 x86_64,下载:
 
 - mlnx-en-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz 文件
+  - 这个只有以太网驱动，可以不下，推荐用功能更丰富的 MLNX_OFED
+
 - MLNX_OFED_LINUX-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz 文件
+  - 直接下载地址： http://content.mellanox.com/ofed/MLNX_OFED-4.9-4.1.7.0/MLNX_OFED_LINUX-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz  （实际测试还能下载）
+
+
+驱动最新下载地址： https://developer.nvidia.com/networking/ethernet-software
+
+点击 [NVIDIA MLNX_OFED (Full Package, w/w Ethernet & InfiniBand)](https://www.mellanox.com/products/infiniband-drivers/linux/mlnx_ofed) 进入，注意 HP 544 是 ConnectX-3 Pro，MLNX_OFED 4.9-x LTS 可以支持，而最新的 MLNX_OFED 5.4/5.8-x LTS 则需要 ConnectX-4 及更新版本的网卡才能支持。
+
+ubuntu 20.04 下可用的最新的 4.9 版本是 [MLNX_OFED_LINUX-4.9-6.0.6.0-ubuntu20.04-x86_64.tgz](https://www.mellanox.com/page/mlnx_ofed_eula?mtag=linux_sw_drivers&mrequest=downloads&mtype=ofed&mver=MLNX_OFED-4.9-6.0.6.0&mname=MLNX_OFED_LINUX-4.9-6.0.6.0-ubuntu20.04-x86_64.tgz)
 
 ### 准备工作
-
-参考：
-
-- https://ixnfo.com/en/how-to-update-the-mellanox-connectx-driver.html
 
 检查当前默认驱动：
 
@@ -87,21 +95,20 @@ $ lspci -vv -s b3:00.0 | grep "Part number" -A 3
 从其他机器上复制文件:
 
 ```bash
-scp sky@10.0.0.10:/home/sky/data/samba/MLNX_OFED_LINUX-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz .
-scp sky@10.0.0.10:/home/sky/data/samba/mlnx-en-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz .
+scp ./MLNX_OFED_LINUX-4.9-6.0.6.0-ubuntu20.04-x86_64.tgz sky@192.168.0.10:/home/sky
 ```
 
 解压缩：
 
 ```bash
-tar -xvf MLNX_OFED_LINUX-4.9-4.1.7.0-ubuntu20.04-x86_64.tgz
-cd MLNX_OFED_LINUX-4.9-4.1.7.0-ubuntu20.04-x86_64
+tar -xvf MLNX_OFED_LINUX-4.9-6.0.6.0-ubuntu20.04-x86_64.tgz
+cd MLNX_OFED_LINUX-4.9-6.0.6.0-ubuntu20.04-x86_64
 ```
 
 执行安装命令：
 
 ```bash
-$ ./mlnxofedinstall
+$ ./mlnxofedinstall --without-fw-update
 
 Logs dir: /tmp/MLNX_OFED_LINUX.18504.logs
 General log file: /tmp/MLNX_OFED_LINUX.18504.logs/general.log
@@ -119,7 +126,7 @@ srp-dkms
 libibverbs1
 ibverbs-utils
 libibverbs-dev
-libibverbs1-dbg
+libibverbs1-dbgmlnxofedinstall
 libmlx4-1
 libmlx4-dev
 libmlx4-1-dbg
@@ -253,25 +260,12 @@ Setting up mlnx-fw-updater (4.9-4.1.7.0) ...
 
 Added 'RUN_FW_UPDATER_ONBOOT=no to /etc/infiniband/openib.conf
 
-Initializing...
-Attempting to perform Firmware update...
-
-The firmware for this device is not distributed inside Mellanox driver: b3:00.0 (PSID: HP_1380110017)
-To obtain firmware for this device, please contact your HW vendor.
-
-Failed to update Firmware.
-See /tmp/MLNX_OFED_LINUX.18504.logs/fw_update.log
-Device (b3:00.0):
-	b3:00.0 Network controller: Mellanox Technologies MT27520 Family [ConnectX-3 Pro]
-	Link Width: x8
-	PCI Link Speed: 8GT/s
-
 Installation passed successfully
 To load the new driver, run:
 /etc/init.d/openibd restart
 ```
 
-上面的 `Failed to update Firmware.` 错误可以忽略。重启设备驱动：
+重启设备驱动：
 
 
 ```bash
@@ -292,8 +286,6 @@ vermagic:       5.4.0-94-generic SMP mod_unload modversions
 ```
 
 可以看到现在的驱动版本已经从默认安装的 4.0-0 变成了 4.9-4.1.7 。
-
-> 后续补充：上面的方式在 x99主板+e5 2666 v3的机器上顺利编译安装，但在 x299 + 7960x 机器上报错。用timeshift恢复后重新来过，增加了参数执行 `./mlnxofedinstall --without-fw-update` 又成功的编译安装完成。
 
 ### ~~linux mint~~
 
@@ -458,4 +450,49 @@ Removing newly installed packages...
 失败但是日子没有错误信息，实在无力再拍错了。
 
 退回去用 ubuntu 原版了。
+
+### 5.15内核
+
+尝试在 ubuntu 20.04 上更新内核到 5.15.0-58， 然后在安装 MLNX_OFED 驱动时报错：
+
+```bash
+Copying build sources from '/var/lib/dkms/mlnx-ofed-kernel/4.9/build/../build' to '/usr/src/ofa_kernel/5.15.0-58-generic' ...
+/bin/cp: cannot stat 'Module*.symvers': No such file or directory
+```
+
+目前 MLNX_OFED 不支持高版本的内核，测试验证过的只有 5.4 内核（也就是 ubuntu 20.04 默认的内核）。如果更新内核，就只能使用默认的 4.0.0 版本的驱动了，无法更新 4.9 版本。貌似 nvidia 也不准备继续支持。
+
+尝试了一下在 5.4 内核上，更新 MLNX_OFED_LINUX-4.9-6.0.6.0 非常顺利。
+
+参考：
+
+- https://forums.developer.nvidia.com/t/failed-to-install-mlnx-ofed-kernel-dkms-deb-with-version-4-9-4-1-7-0/205889/2 
+- https://docs.nvidia.com/networking/display/MLNXOFEDv494170/General+Support+in+MLNX_OFED#GeneralSupportinMLNX_OFED-MLNX_OFEDSupportedOperatingSystems
+- https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1926938
+
+## 总结
+
+hp544+ 这种 cx3 网卡，比较尴尬，驱动更新基本要停了，对新内核的支持也处于放弃状态。目前只能选择：
+
+- 用 ubuntu 20.04 + 5.4 内核，驱动升级到 MLNX_OFED_LINUX-4.9-6.0.6.0 
+- 用 ubuntu 20.04 + 5.15 内核，驱动继续使用默认自带的 4.0.0 版本。
+
+考虑到目前对最新版本内核没有特别的需求，我选择第一个方案，暂时维持系统在最稳定的状态：ubuntu 20.04 + 5.4 内核 + MLNX_OFED_LINUX-4.9-6.0.6.0 ，都是有官方支持做保障的。
+
+## 参考资料
+
+- [家用万兆网络指南 1 - 不如先来个最简单的100G网络](https://zhuanlan.zhihu.com/p/74082377) 
+- [Mellanox网卡驱动安装指南 Mellanox OFED](https://blog.51cto.com/zhangyy/4632975)
+
+
+
+
+
+
+
+
+
+
+
+
 

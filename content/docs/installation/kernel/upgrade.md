@@ -71,7 +71,60 @@ srp, 4.9, 5.4.0-97-generic, x86_64: installed
 
 ### 手动更新大版本
 
-对于大版本更新，需要手工
+对于大版本更新，需要手工。
 
-TBD: 暂时只跑 5.4 LTS 版本，先不升级大版本。
+考虑到 22.04 版本不稳定，试用之下发现有一些莫名其妙的问题，不想折腾，继续试用 20.04版本，但是希望可以把内核从 5.4 升级到更新的版本，比如 5.15.
 
+先看一下有哪些版本可以选择：
+
+```bash
+apt update
+apt list linux-headers-5.15.*-*-generic linux-image-5.15.*-*-generic
+
+linux-headers-5.15.0-33-generic/focal-updates,focal-security 5.15.0-33.34~20.04.1 amd64
+linux-headers-5.15.0-41-generic/focal-updates,focal-security 5.15.0-41.44~20.04.1 amd64
+linux-headers-5.15.0-43-generic/focal-updates,focal-security 5.15.0-43.46~20.04.1 amd64
+linux-headers-5.15.0-46-generic/focal-updates,focal-security 5.15.0-46.49~20.04.1 amd64
+linux-headers-5.15.0-48-generic/focal-updates,focal-security 5.15.0-48.54~20.04.1 amd64
+linux-headers-5.15.0-50-generic/focal-updates,focal-security 5.15.0-50.56~20.04.1 amd64
+linux-headers-5.15.0-52-generic/focal-updates,focal-security 5.15.0-52.58~20.04.1 amd64
+linux-headers-5.15.0-53-generic/focal-updates,focal-security 5.15.0-53.59~20.04.1 amd64
+linux-headers-5.15.0-56-generic/focal-updates,focal-security 5.15.0-56.62~20.04.1 amd64
+linux-headers-5.15.0-57-generic/focal-updates,focal-security 5.15.0-57.63~20.04.1 amd64
+linux-headers-5.15.0-58-generic/focal-updates,focal-security 5.15.0-58.64~20.04.1 amd64
+linux-image-5.15.0-33-generic/focal-updates,focal-security 5.15.0-33.34~20.04.1 amd64
+linux-image-5.15.0-41-generic/focal-updates,focal-security 5.15.0-41.44~20.04.1 amd64
+linux-image-5.15.0-43-generic/focal-updates,focal-security 5.15.0-43.46~20.04.1 amd64
+linux-image-5.15.0-46-generic/focal-updates,focal-security 5.15.0-46.49~20.04.1 amd64
+linux-image-5.15.0-48-generic/focal-updates,focal-security 5.15.0-48.54~20.04.1 amd64
+linux-image-5.15.0-50-generic/focal-updates,focal-security 5.15.0-50.56~20.04.1 amd64
+linux-image-5.15.0-52-generic/focal-updates,focal-security 5.15.0-52.58~20.04.1 amd64
+linux-image-5.15.0-53-generic/focal-updates,focal-security 5.15.0-53.59~20.04.1 amd64
+linux-image-5.15.0-56-generic/focal-updates,focal-security 5.15.0-56.62~20.04.1 amd64
+linux-image-5.15.0-57-generic/focal-updates,focal-security 5.15.0-57.63~20.04.1 amd64
+linux-image-5.15.0-58-generic/focal-updates,focal-security 5.15.0-58.64~20.04.1 amd64
+```
+
+试试最新的 5.15.0-58
+
+```bash
+sudo apt install linux-headers-5.15.0-58-generic linux-image-5.15.0-58-generic
+```
+
+安装完成后重启，检查：
+
+```bash
+$ uname -a
+Linux skyserver 5.15.0-58-generic #64~20.04.1-Ubuntu SMP Fri Jan 6 16:42:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+
+$ lsb_release -a
+No LSB modules are available.
+Distributor ID:	Ubuntu
+Description:	Ubuntu 20.04.5 LTS
+Release:	20.04
+Codename:	focal
+```
+
+参考资料：
+
+- https://sysin.org/blog/ubuntu-2004-upgrade-kernel/

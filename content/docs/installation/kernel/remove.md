@@ -22,13 +22,18 @@ https://askubuntu.com/questions/1253347/how-to-easily-remove-old-kernels-in-ubun
 # the list printed in the dry run
 
 uname -a
-# IN_USE=$(uname -a | awk '{ print $3 }')
-IN_USE="5.4.0.97"
+IN_USE=$(uname -a | awk '{ print $3 }')
+if [[ $IN_USE == *-generic ]]
+then
+  IN_USE=${IN_USE::-8}
+fi
 echo "Your in use kernel is $IN_USE"
 
 OLD_KERNELS=$(
     dpkg --list |
         grep -v "$IN_USE" |
+        grep -v "linux-headers-generic" |
+        grep -v "linux-image-generic"  |
         grep -Ei 'linux-image|linux-headers|linux-modules' |
         awk '{ print $2 }'
 )
@@ -42,16 +47,9 @@ if [ "$1" == "exec" ]; then
 fi
 ```
 
-这个脚本有个小问题，就是有时 `uname -a` 拿到的内核版本号，有时会带有 generic 后缀， 比如：
+执行 `bash ./remove_old_kernels.sh` 看查看到要删除的内核版本和相关的包，确认没有问题之后再通过 `sudo bash ./remove_old_kernels.sh exec` 进行实际删除。
 
-```bash
-$ uname -a
-Linux skyserver 5.4.0-97-generic #110-Ubuntu SMP Thu Jan 13 18:22:13 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
-```
-
-手工hardcode一个版本号就好了，反正平时删除内核的机会也不多。
-
-执行 `./remove_old_kernels.sh` 看查看到要删除的内核版本和相关的包，确认没有问题之后再通过 `sudo ./remove_old_kernels.sh exec` 进行实际删除。之后重启，检查现有的内核： 
+之后重启，检查现有的内核： 
 
 ```bash
 dpkg --list | grep -Ei 'linux-image|linux-headers|linux-modules' 
