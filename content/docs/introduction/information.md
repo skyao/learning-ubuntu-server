@@ -1,7 +1,7 @@
 ---
 title: "Ubuntu Server资料收集"
 linkTitle: "资料收集"
-weight: 201
+weight: 90
 date: 2021-01-24
 description: >
   收集ubuntu server的资料

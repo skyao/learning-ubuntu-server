@@ -20,8 +20,10 @@ sudo apt-get install build-essential
 开始安装:
 
 ```bash
-$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
 
+```bash
 ==> This script will install:
 /home/linuxbrew/.linuxbrew/bin/brew
 /home/linuxbrew/.linuxbrew/share/doc/homebrew

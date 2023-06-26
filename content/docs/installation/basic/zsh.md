@@ -25,11 +25,25 @@ https://github.com/ohmyzsh/ohmyzsh
 sudo apt install zsh zsh-doc
 ```
 
-然后安装ohmyzsh，中途询问是否把zsh作为默认shell时选择Y：
+然后安装ohmyzsh:
 
 ```bash
 sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
 
+> DNS 污染问题：
+>
+> 如果遇到 DNS 污染，导致 raw.githubusercontent.com 被解析到 127.0.0.1 或者 0.0.0.1 导致无法访问。需要修改 hosts 文件:
+>
+> sudo vi /etc/hosts
+>
+> 增加一行：
+> 
+> 199.232.68.133 raw.githubusercontent.com
+
+中途询问是否把zsh作为默认 shell 时选择Y：
+
+```bash
 Do you want to change your default shell to zsh? [Y/n] Y
 Changing the shell...
 ```
@@ -38,7 +52,13 @@ Changing the shell...
 
 ### 关闭自动粘贴转义
 
-Oh-my-zsh 默认开启自动粘贴转义，容易造成问题，建议关闭，修改 .zshrc 文件：
+Oh-my-zsh 默认开启自动粘贴转义，容易造成问题，建议关闭。
+
+```bash
+vi ~/.zshrc
+```
+
+修改 .zshrc 文件：
 
 ```bash
 # Uncomment the following line if pasting URLs and other text is messed up.

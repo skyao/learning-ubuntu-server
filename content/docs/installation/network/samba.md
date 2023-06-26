@@ -21,7 +21,11 @@ chmod 777 data/samba
 
 ### 配置samba
 
-`sudo vi /etc/samba/smb.conf` 打开配置文件，在文件末尾添加以下内容：
+```bash
+sudo vi /etc/samba/smb.conf
+``` 
+
+打开配置文件，在文件末尾添加以下内容：
 
 ```properties
 [share]

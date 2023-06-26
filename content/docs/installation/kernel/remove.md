@@ -13,7 +13,11 @@ description: >
 
 https://askubuntu.com/questions/1253347/how-to-easily-remove-old-kernels-in-ubuntu-20-04-lts
 
-`vi remove_old_kernels.sh` 新建一个文件内容如下：
+```bash
+vi remove_old_kernels.sh
+```
+
+新建一个文件内容如下：
 
 ```bash
 #!/bin/bash
@@ -47,12 +51,29 @@ if [ "$1" == "exec" ]; then
 fi
 ```
 
-执行 `bash ./remove_old_kernels.sh` 看查看到要删除的内核版本和相关的包，确认没有问题之后再通过 `sudo bash ./remove_old_kernels.sh exec` 进行实际删除。
+执行 
 
-之后重启，检查现有的内核： 
+```bash
+bash ./remove_old_kernels.sh
+``` 
+
+看查看到要删除的内核版本和相关的包，确认没有问题之后再通过 
+
+```bash
+sudo bash ./remove_old_kernels.sh exec
+``` 
+
+进行实际删除。
+
+之后重启，执行： 
 
 ```bash
 dpkg --list | grep -Ei 'linux-image|linux-headers|linux-modules' 
+```
+
+检查现有的内核： 
+
+```bash
 ii  linux-headers-5.4.0-97               5.4.0-97.110                            all          Header files related to Linux kernel version 5.4.0
 ii  linux-headers-5.4.0-97-generic       5.4.0-97.110                            amd64        Linux kernel headers for version 5.4.0 on 64 bit x86 SMP
 ii  linux-headers-generic                5.4.0.97.101                            amd64        Generic Linux kernel headers

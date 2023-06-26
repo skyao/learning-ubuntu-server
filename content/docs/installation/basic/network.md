@@ -21,7 +21,12 @@ A start job is running for wait for Network to be configured
 
 ```bash
 $ sudo systemctl status systemd-networkd-wait-online.service
+```
 
+输出为：
+
+```bash
+$ sudo systemctl status systemd-networkd-wait-online.service
 systemd-networkd-wait-online.service - Wait for Network to be Configured
      Loaded: loaded (/lib/systemd/system/systemd-networkd-wait-online.service; enabled; vendor preset: enabled)
      Active: failed (Result: exit-code) since Sat 2022-01-15 08:12:57 UTC; 7min ago
@@ -43,7 +48,10 @@ Jan 15 08:12:57 skywork2 systemd[1]: Failed to start Wait for Network to be Conf
 问题所在在于网卡的配置：
 
 ```bash
-$ networkctl 
+networkctl 
+```
+
+```bash
 IDX LINK   TYPE       OPERATIONAL SETUP      
   1 lo     loopback   carrier     unmanaged  
   2 enp5s0 ether      no-carrier  configuring
@@ -58,9 +66,7 @@ IDX LINK   TYPE       OPERATIONAL SETUP
 
 ```bash
 cd /etc/systemd/system/network-online.target.wants/
-$ ls -l
-lrwxrwxrwx 1 root root 56 Aug 16 11:02 systemd-networkd-wait-online.service -> /lib/systemd/system/systemd-networkd-wait-online.service
-$ sudo vi systemd-networkd-wait-online.service
+sudo vi systemd-networkd-wait-online.service
 ```
 
 在`[Service]`下添加一行 `TimeoutStartSec=2sec`：
@@ -70,10 +76,10 @@ $ sudo vi systemd-networkd-wait-online.service
 Type=oneshot
 ExecStart=/lib/systemd/systemd-networkd-wait-online
 RemainAfterExit=yes
-TimeoutStartSec=2sec			# 增加这一行
+TimeoutStartSec=15sec			# 增加这一行
 ```
 
-这样2秒钟之后就会继续启动，而不是卡住两分钟，虽然治标不治本。
+这样15秒钟之后就会继续启动，而不是卡住两分钟，虽然治标不治本。
 
 TBD： 发现我的40G网络会有dhcp获取IP地址很慢的问题，基本要30秒左右才能拿到IP地址，导致启动时很慢。即使这里设置timeout可以继续启动操作系统， 但是进入桌面之后由于40G网络的IP尚未能获取，用40G网络的IP地址会无法访问。千兆网络dhcp的速度就非常快。
 
@@ -82,7 +88,9 @@ TBD： 发现我的40G网络会有dhcp获取IP地址很慢的问题，基本要3
 终极解决方案还是要配置好网络。用 ip 命令查看当前网卡情况：
 
 ```bash
-$ ip addr
+ip addr
+```
+```bash
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
     inet 127.0.0.1/8 scope host lo
@@ -128,7 +136,11 @@ systemctl | grep net-devices
 
 目前 systemd 接管的网卡情况如下：
 
+```bash
+networkctl 
 ```
+
+```bash
 $ networkctl 
 IDX LINK   TYPE       OPERATIONAL SETUP      
   1 lo     loopback   carrier     unmanaged  
@@ -150,9 +162,10 @@ IDX LINK   TYPE       OPERATIONAL SETUP
 
 ```bash
 cd /usr/lib/systemd/network
-```
+sudo vi 01-disable-enp5s0.network
+``` 
 
-`sudo vi 01-disable-enp5s0.network` 创建文件，内容如下：
+创建文件，内容如下：
 
 ```
 [Match]
@@ -162,7 +175,12 @@ MACAddress=00:e0:4c:54:17:3a
 Unmanaged=yes
 ```
 
-`sudo vi 02-disable-enp6s0.network` 创建文件，内容如下：
+```bash
+cd /usr/lib/systemd/network
+sudo vi 02-disable-enp6s0.network
+``` 
+
+创建文件，内容如下：
 
 ```
 [Match]
@@ -177,7 +195,11 @@ Unmanaged=yes
 重启机器之后，看效果：
 
 ```bash
-$ networkctl 
+$ networkctl
+```
+
+```bash
+$ networkctl
 IDX LINK   TYPE       OPERATIONAL SETUP     
   1 lo     loopback   carrier     unmanaged 
   2 enp4s0 ether      routable    configured

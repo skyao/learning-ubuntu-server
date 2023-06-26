@@ -21,7 +21,9 @@ To see these additional updates run: apt list --upgradable
 查看具体内容:
 
 ```bash
-$ sudo apt list --upgradable
+sudo apt list --upgradable
+```
+```bash
 [sudo] password for sky: 
 Listing... Done
 linux-generic/focal-proposed 5.4.0.97.101 amd64 [upgradable from: 5.4.0.96.100]
@@ -44,6 +46,8 @@ sudo apt upgrade
 
 ```bash
 dkms status
+```
+```bash
 iser, 4.9, 5.4.0-94-generic, x86_64: installed
 iser, 4.9, 5.4.0-96-generic, x86_64: installed
 iser, 4.9, 5.4.0-97-generic, x86_64: installed
@@ -78,9 +82,13 @@ srp, 4.9, 5.4.0-97-generic, x86_64: installed
 先看一下有哪些版本可以选择：
 
 ```bash
-apt update
-apt list linux-headers-5.15.*-*-generic linux-image-5.15.*-*-generic
 
+sudo apt update
+# 下面这个 apt list 命令要在 bash 下才能成功，先临时切换到 bash
+bash
+sudo apt list linux-headers-5.15.*-*-generic linux-image-5.15.*-*-generic
+```
+```bash
 linux-headers-5.15.0-33-generic/focal-updates,focal-security 5.15.0-33.34~20.04.1 amd64
 linux-headers-5.15.0-41-generic/focal-updates,focal-security 5.15.0-41.44~20.04.1 amd64
 linux-headers-5.15.0-43-generic/focal-updates,focal-security 5.15.0-43.46~20.04.1 amd64
@@ -114,9 +122,20 @@ sudo apt install linux-headers-5.15.0-58-generic linux-image-5.15.0-58-generic
 安装完成后重启，检查：
 
 ```bash
-$ uname -a
+uname -a
+```
+```bash
 Linux skyserver 5.15.0-58-generic #64~20.04.1-Ubuntu SMP Fri Jan 6 16:42:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+```
 
+可以看到 linux 内核已经更新到 5.15。
+
+但这只是升级内核，发行版本还是会继续保持不变：
+
+```bash
+lsb_release -a
+```
+```bash
 $ lsb_release -a
 No LSB modules are available.
 Distributor ID:	Ubuntu
