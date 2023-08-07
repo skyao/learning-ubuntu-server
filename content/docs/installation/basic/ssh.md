@@ -38,7 +38,7 @@ scp ~/.ssh/id_rsa.pub sky@192.168.0.10:/home/sky
 在ubuntu server服务器上运行：
 
 ```bash
-mkdir .ssh
+mkdir -p .ssh
 touch ~/.ssh/authorized_keys
 cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
