@@ -21,6 +21,44 @@ description: >
 sudo apt install hdparm
 ```
 
+更新，如果遇到 `HDIO_DRIVE_CMD(identify) failed: Inappropriate ioctl for device` 错误：
+
+```bash
+$ sudo hdparm -tT /dev/nvme0n1p1
+
+/dev/nvme0n1p1:
+ Timing cached reads:   20218 MB in  1.99 seconds = 10157.69 MB/sec
+ HDIO_DRIVE_CMD(identify) failed: Inappropriate ioctl for device
+ Timing buffered disk reads: 5302 MB in  3.00 seconds = 1767.28 MB/sec
+```
+
+则需要更新 hdparm 的版本，一般 apt 安装的版本是 v9.58：
+
+```bash
+$ hdparm -V
+hdparm v9.58
+```
+
+最新版本下载地址： https://sourceforge.net/projects/hdparm/
+
+目前最新的版本是 v9.65，下载完成后执行：
+
+```bash
+tar xvf hdparm-9.65.tar.gz
+cd hdparm-9.65
+make
+sudo make install
+```
+
+查看新安装的版本：
+
+```bash
+$ hdparm -V
+hdparm v9.65
+```
+
+这个时候就不会再出现  `HDIO_DRIVE_CMD(identify) failed: Inappropriate ioctl for device` 的报错了。
+
 ## 实践案例
 
 ### 查看硬盘的相关设置
@@ -90,3 +128,4 @@ SG_IO: bad/missing sense data, sb[]:  70 00 05 00 00 00 00 0a 00 00 00 00 20 00 
 ## 参考资料
 
 - [Linux hdparm命令](https://www.runoob.com/linux/linux-comm-hdparm.html)
+- [Linux下用hdparm測試磁盤性能遇到“Inappropriate ioctl for device”錯誤](http://www.unixlinux.online/unixlinux/linuxjc/linuxjc/201702/43375.html)
