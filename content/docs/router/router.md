@@ -148,6 +148,16 @@ network:
         macaddress: e0:4f:43:ca:82:49
       set-name: lan5
       dhcp4: no
+    lan6:
+      match:
+        macaddress: e0:07:1b:78:3e:a1
+      set-name: lan6
+      dhcp4: no
+    lan7:
+      match:
+        macaddress: e0:07:1b:78:3e:a2
+      set-name: lan7
+      dhcp4: no
   bridges:
     br:
       interfaces:
@@ -156,6 +166,8 @@ network:
         - lan3
         - lan4
         - lan5
+        - lan6
+        - lan7
       addresses:
         - 192.168.100.50/24
       dhcp4: no
@@ -170,7 +182,9 @@ network:
 | skyserver  | 192.168.0.10          | 192.168.100.10         |
 | skyserver2 | 192.168.0.20          | 192.168.100.20         |
 | skyserver3 | 192.168.0.30          | 192.168.100.30         |
+| Skyserver4 | 192.168.0.40          | 192.168.100.40         |
 | skyserver5 | 192.168.0.50 （wan1） | 192.168.100.50（网桥） |
+| Skyserver6 | 192.168.0.60          | 192.168.100.60         |
 | skywork    | 192.168.0.90          | 192.168.100.90         |
 
 保存后执行：
@@ -490,6 +504,10 @@ sudo vi /etc/ufw/before.rules
 -A ufw-before-output -o lan4 -j ACCEPT
 -A ufw-before-input -i lan5 -j ACCEPT
 -A ufw-before-output -o lan5 -j ACCEPT
+-A ufw-before-input -i lan6 -j ACCEPT
+-A ufw-before-output -o lan6 -j ACCEPT
+-A ufw-before-input -i lan7 -j ACCEPT
+-A ufw-before-output -o lan7 -j ACCEPT
 ```
 
 然后在 `*filter :ufw-before-input - [0:0]` 之前加入以下内容：
