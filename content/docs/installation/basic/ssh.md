@@ -32,13 +32,13 @@ ssh sky@ubuntu.server.ip
 上传本机的 `.ssh/id_isa.pub` 文件到ubuntu server服务器端：
 
 ```bash
-scp ~/.ssh/id_rsa.pub sky@dreamfly.io:/home/sky 
+scp ~/.ssh/id_rsa.pub sky@192.168.0.10:/home/sky 
 ```
 
 在ubuntu server服务器上运行：
 
 ```bash
-mkdir .ssh
+mkdir -p .ssh
 touch ~/.ssh/authorized_keys
 cat ~/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
@@ -68,7 +68,7 @@ ssh默认采用22端口，对于需要进行端口映射导致不能访问22端�
 如下面的命令，有一台服务器的22端口是通过路由器的2122端口进行端口映射，则远程ssh连接的命令为：
 
 ```bash
-ssh -p 2122 sky@home.springmesh.io
+ssh -p 2122 sky@dev.sky.io
 ```
 
 修改本机的 `~/.bash_profile` 或者 `~/.zshrc` 文件，加入以下内容，以后就可以一个简单命令直接ssh到远程服务器了：

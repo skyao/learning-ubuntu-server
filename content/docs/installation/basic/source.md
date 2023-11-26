@@ -17,40 +17,75 @@ description: >
 
 ```bash
 sudo cp /etc/apt/sources.list /etc/apt/sources.list_original
+sudo vi /etc/apt/sources.list
 ```
 
-然后修改 `/etc/apt/sources.list` 文件.
+然后修改 `/etc/apt/sources.list` 文件. 
+
+
+
+### ubuntu 23.04
+
+阿里云源 :
+
+```bash
+deb http://mirrors.aliyun.com/ubuntu/ lunar main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ lunar main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ lunar-security main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ lunar-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ lunar-updates main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ lunar-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ lunar-proposed main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ lunar-proposed main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ lunar-backports main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ lunar-backports main restricted universe multiverse
+```
+
+中科大源：
+
+```bash
+deb https://mirrors.ustc.edu.cn/ubuntu/ lunar main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ lunar main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ lunar-updates main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ lunar-updates main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ lunar-backports main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ lunar-backports main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ lunar-security main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ lunar-security main restricted universe multiverse
+deb https://mirrors.ustc.edu.cn/ubuntu/ lunar-proposed main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ lunar-proposed main restricted universe multiverse
+```
 
 ### ubuntu 22.04
 
-阿里云源（速度一般）:
+阿里云源 (不知道为什么特别慢）:
 
 ```bash
 deb http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-security main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-updates main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-proposed main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ jammy-backports main restricted universe multiverse
 ```
 
-中科大源（速度快）：
+中科大源（非常快）：
 
 ```bash
 deb https://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy main restricted universe multiverse
 deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-updates main restricted universe multiverse
 deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-backports main restricted universe multiverse
 deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-security main restricted universe multiverse
 deb https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
-deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
+# deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted universe multiverse
 ```
 
 
@@ -61,15 +96,15 @@ deb-src https://mirrors.ustc.edu.cn/ubuntu/ jammy-proposed main restricted unive
 
 ```bash
 deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
 deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
-deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
 ```
 
 中科大镜像源:
@@ -99,37 +134,35 @@ deb http://mirrors.163.com/ubuntu/ focal-security main restricted universe multi
 deb http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
 deb http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
 deb http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
-deb-src http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ focal main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ focal-security main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ focal-updates main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ focal-proposed main restricted universe multiverse
+# deb-src http://mirrors.163.com/ubuntu/ focal-backports main restricted universe multiverse
 ```
 
 清华源：
 
 ```bash
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-updates main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-updates main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-updates main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-backports main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-backports main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-backports main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-security main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-security main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-security main restricted universe multiverse
 deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-proposed main restricted universe multiverse
-deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-proposed main restricted universe multiverse
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-proposed main restricted universe multiverse
 ```
-
-
 
 ### 更新系统
 
-先更新各种软件到最新，简单的apt-get搞定：
+先更新各种软件到最新，简单的 apt upgrade 搞定：
 
 ```bash
-apt update
-apt upgrade
+sudo apt update
+sudo apt upgrade
 ```
 
 ## 取消PPA仓库

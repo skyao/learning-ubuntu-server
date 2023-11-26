@@ -31,13 +31,15 @@ SDKMAN 5.15.0
 ### ubuntu
 
 ```bash
-$ sudo apt install unzip zip
-$ curl -s "https://get.sdkman.io" | bash
+sudo apt install unzip zip
+curl -s "https://get.sdkman.io" | bash
+```
 
-$ source "/home/sky/.sdkman/bin/sdkman-init.sh"
-$ sdk version
+安装完成后：
 
-SDKMAN 5.15.0
+```bash
+source "/home/sky/.sdkman/bin/sdkman-init.sh"
+sdk version
 ```
 
 

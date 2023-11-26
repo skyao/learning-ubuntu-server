@@ -1,7 +1,7 @@
 ---
 title: "介绍Ubuntu Server"
-linkTitle: "介绍Ubuntu Server"
-weight: 201
+linkTitle: "介绍"
+weight: 10
 date: 2021-01-24
 description: >
   介绍ubuntu server
