@@ -50,3 +50,31 @@ ubuntu server 的安装非常简单，如果是用 vmware 安装，则更加的�
 
 bios 启动选择 efi，开启安全启动。
 
+
+
+## raid安装
+
+参考：
+
+- [server - Install Ubuntu 20.04 Focal Fossa with RAID 1 on two devices](https://askubuntu.com/questions/1234949/install-ubuntu-20-04-focal-fossa-with-raid-1-on-two-devices)
+- [Looking to create a Software RAID 1 setup for your 2-disk server on Ubuntu Server 20.04?](https://gist.io/@fevangelou/2f7aa0d9b5cb42d783302727665bf80a)： 其中的一个答案的单独整理版本。
+
+不能简单的利用 "Create Software RAID (md) " 功能直接把两块硬盘做成 raid0/1，这样会因为没有启动分区而报错：
+
+>  If you put all disks into RAIDS or LVM VGs, there will be nowhere to put the boot partition.
+
+基本思路是按照普通安装 ubuntu server 的方式，分别对两块硬盘做分区，并保持分区方案的一致。分区包括：
+
+- esp 分区：只在第一块硬盘上使用，第二块硬盘只要保持同样大小
+- 用作 "/" 的分区
+- 用作 "/timeshift" 的分区
+
+然后再将准备好的这两个分区分别建立 raid0 md，然后分别格式化为 ext4，挂载为  "/"  和 "/timeshift" 。
+
+然后正常安装 ubuntu server。
+
+
+
+
+
+ 

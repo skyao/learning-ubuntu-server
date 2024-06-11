@@ -9,7 +9,7 @@ menu:
     pre: <i class='fas fa-book'></i>
 date: 2021-08-18
 description: >
-  xxxx学习笔记
+  Ubuntu Server学习笔记
 ---
 
 {{% pageinfo %}}
