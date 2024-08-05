@@ -9,7 +9,7 @@ description: >
 
 参见：
 
-https://skyao.io/learning-git/docs/installation.html
+https://skyao.io/learning-git/docs/installation/
 
 
 

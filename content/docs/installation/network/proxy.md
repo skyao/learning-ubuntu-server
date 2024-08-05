@@ -18,11 +18,15 @@ alias proxyon='export all_proxy=socks5://192.168.0.1:7891;export http_proxy=http
 alias proxyoff='unset all_proxy http_proxy https_proxy no_proxy'
 ```
 
-> 背景：我的代理安装在路由器上，http端口为 3333， socks5 端口为 23456
+> 背景：我的代理安装在路由器上，http端口为 7890， socks5 端口为 7891
 
 ### 给git配置代理
 
-`vi ~/.ssh/config` ，内容如下：
+```bash
+vi ~/.ssh/config
+```
+
+内容如下：
 
 ```bash
 Host github.com

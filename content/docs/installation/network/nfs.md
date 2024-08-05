@@ -1,10 +1,10 @@
 ---
 title: "安装配置nfs文件共享"
-linkTitle: "nfs文件共享"
+linkTitle: "nfs文件共享（单硬盘版）"
 weight: 30
 date: 2021-08-26
 description: >
-  在linux mint上安装nfs，进行文件共享
+  在ubuntu server上安装nfs，进行文件共享
 ---
 
 
@@ -15,7 +15,7 @@ description: >
 
 ```bash
 sudo apt update
-sudo apt install nfs-kernel-server
+sudo apt install nfs-kernel-server -y
 ```
 
 查看 nfs-server 的状态：
