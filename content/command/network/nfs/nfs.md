@@ -10,7 +10,7 @@ description: >
 
 ## 安装
 
-nfs 服务器和客户端的安装见 [安装配置nfs文件共享](../../../docs/installation/network/nfs.html)
+nfs 服务器和客户端的安装见 [安装配置nfs文件共享](../../../../docs/installation/network/nfs/)
 
 ## 使用
 
