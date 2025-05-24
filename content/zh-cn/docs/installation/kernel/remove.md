@@ -14,6 +14,8 @@ description: >
 https://askubuntu.com/questions/1253347/how-to-easily-remove-old-kernels-in-ubuntu-20-04-lts
 
 ```bash
+mkdir ~/work/soft/ubuntu
+cd ~/work/soft/ubuntu
 vi remove_old_kernels.sh
 ```
 
@@ -74,11 +76,11 @@ dpkg --list | grep -Ei 'linux-image|linux-headers|linux-modules'
 检查现有的内核： 
 
 ```bash
-ii  linux-headers-5.4.0-97               5.4.0-97.110                            all          Header files related to Linux kernel version 5.4.0
-ii  linux-headers-5.4.0-97-generic       5.4.0-97.110                            amd64        Linux kernel headers for version 5.4.0 on 64 bit x86 SMP
-ii  linux-headers-generic                5.4.0.97.101                            amd64        Generic Linux kernel headers
-ii  linux-image-5.4.0-97-generic         5.4.0-97.110                            amd64        Signed kernel image generic
-ii  linux-image-generic                  5.4.0.97.101                            amd64        Generic Linux kernel image
-ii  linux-modules-5.4.0-97-generic       5.4.0-97.110                            amd64        Linux kernel extra modules for version 5.4.0 on 64 bit x86 SMP
-ii  linux-modules-extra-5.4.0-97-generic 5.4.0-97.110                            amd64        Linux kernel extra modules for version 5.4.0 on 64 bit x86 SMP
+ii  linux-headers-5.15.0-140               5.15.0-140.150                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-headers-5.15.0-140-generic       5.15.0-140.150                          amd64        Linux kernel headers for version 5.15.0 on 64 bit x86 SMP
+ii  linux-headers-generic                  5.15.0.140.135                          amd64        Generic Linux kernel headers
+ii  linux-image-5.15.0-140-generic         5.15.0-140.150                          amd64        Signed kernel image generic
+ii  linux-image-generic                    5.15.0.140.135                          amd64        Generic Linux kernel image
+ii  linux-modules-5.15.0-140-generic       5.15.0-140.150                          amd64        Linux kernel extra modules for version 5.15.0 on 64 bit x86 SMP
+ii  linux-modules-extra-5.15.0-140-generic 5.15.0-140.150                          amd64        Linux kernel extra modules for version 5.15.0 on 64 bit x86 SMP
 ```

@@ -20,7 +20,20 @@ alias proxyoff='unset all_proxy http_proxy https_proxy no_proxy'
 
 > 背景：我的代理安装在路由器上，http端口为 7890， socks5 端口为 7891
 
-### 给git配置代理
+### 给 apt 配置代理
+
+```bash
+sudo vi /etc/apt/apt.conf.d/proxy.conf
+```
+
+添加内容：
+
+```bash
+Acquire::http::proxy "http://192.168.3.1:7890/";
+Acquire::https::proxy "http://192.168.3.1:7890/";
+```
+
+### 给 git 配置代理
 
 ```bash
 vi ~/.ssh/config
