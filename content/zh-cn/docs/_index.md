@@ -18,5 +18,5 @@ description: >
 
 
 
-![](docs/introduction/images/ubuntu_logo.png)
+![](./introduction/images/ubuntu_logo.png)
 

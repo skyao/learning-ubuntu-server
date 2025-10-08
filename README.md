@@ -1,6 +1,6 @@
 # Ubuntu Server学习笔记
 
-![](content/docs/introduction/images/ubuntu_logo.png)
+![](content/zh-cn/docs/introduction/images/ubuntu_logo.png)
 
 ### 内容介绍
 
