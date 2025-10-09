@@ -12,7 +12,7 @@ SDKMAN 是一款管理多版本 SDK 的工具，可以实现在多个版本间�
 
 > sdkman 支持 macos 和 linux，可以参考：
 > 
-> https://skyao.io/learning-macos/docs/programing/common/sdkman.html
+> https:/skyao.net/learning-macos/docs/programing/common/sdkman
 
 ### 安装sdkman
 
